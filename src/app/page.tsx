@@ -13,9 +13,6 @@ export default function Home() {
     setResponse(null);
 
     try {
-      const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
-      if (!webhookUrl) throw new Error("Webhook URL is missing");
-
       const res = await fetch("/api/n8n", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
