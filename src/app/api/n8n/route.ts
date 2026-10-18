@@ -3,28 +3,25 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { use_case, query } = body;
+    
+    // Aapka asli N8N Production Webhook URL
+    const n8nUrl = "https://muhammadsha75.app.n8n.cloud/webhook/kalvore-nexus";
 
-    // Direct Gemini AI simulation for Kalvore Nexus Hackathon Demo
-    const responseData = {
-      ticket_id: `KALVORE-${Math.floor(1000 + Math.random() * 9000)}`,
-      severity: use_case === "it_support" ? "P1" : "Urgent",
-      category: "Hardware & System Reliability",
-      summary: `Analyzed query: "${query}"`,
-      root_cause_hypothesis: "Critical system instability identified requiring immediate intervention.",
-      resolution_steps: [
-        "Isolate affected hardware components and run diagnostics.",
-        "Check system event logs for fatal error codes.",
-        "Initiate emergency failover protocol to prevent data loss."
-      ],
-      assigned_team: "Elite Enterprise Operations",
-      estimated_resolution_time: "15min",
-      requires_escalation: true,
-      status: "SUCCESS"
-    };
+    // N8N Engine ko request bhejna
+    const response = await fetch(n8nUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    // N8N se jo JSON response aya usay wapas frontend ko bhejna
+    const responseData = await response.json();
 
     return NextResponse.json(responseData, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to process request" }, { status: 500 });
+    console.error("N8N Error:", error);
+    return NextResponse.json({ error: "Failed to connect to Kalvore Engine" }, { status: 500 });
   }
 }
